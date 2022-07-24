@@ -12,7 +12,7 @@ const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 // Openweathermap api key
-const API_KEY = 'ecff323680c49569d3f3ef31444f9a25';
+const API_KEY = 'd2baadc7f230fbdc0f72db4d932eb525';
 
 // Variables for displaying current date and time
 setInterval(() => {
@@ -33,3 +33,45 @@ setInterval(() => {
 
 }, 1000);
 
+// Function to get coordinates for weather location
+getWeatherData();
+function getWeatherData() {
+    navigator.geolocation.getCurrentPosition((success) => {
+
+        let {latitude, longitude} = success.coords;
+
+        // Fetch API
+        fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=imperial&appid=${API_KEY}`).then(res => res.json()).then(data => {
+
+        console.log(data);
+        showWeatherData(data);
+        })
+
+
+    })
+}
+
+function showWeatherData(data) {
+    let {temp, humidity, wind_speed, uv_index} = data.current;
+
+    currentWeatherItemsEl.innerHTML =
+     `<div class="weather-item">
+        <div>Temperature</div>
+        <div>${temp}#176; F</div>
+    </div>
+
+    <div class="weather-item">
+        <div>Humidity</div>
+        <div>${humidity}%</div>
+    </div>
+
+    <div class="weather-item">
+        <div>Wind Speed</div>
+        <div>${wind_speed}MPH</div>
+    </div>
+
+    <div class="weather-item">
+        <div>UV Index</div>
+        <div>${uv_index}</div>
+    </div>`
+}
